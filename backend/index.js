@@ -11,6 +11,10 @@ dns.setServers(['8.8.8.8', '1.1.1.1']);
 app.use(express.json());
 app.use(cors());
 
+app.get('/', (req, res) => {
+    res.send("Server aur Database dono set hain!");
+});
+
 // Routes Middleware
 app.use('/api/auth', require('./routes/auth'));
 
