@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import { api } from '@/lib/api';
 
 export default function TasksPage() {
   const router = useRouter();
@@ -25,9 +25,7 @@ export default function TasksPage() {
         return;
       }
 
-      const response = await axios.get('http://localhost:5000/api/tasks', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get('/api/tasks');
       setTasks(response.data);
       setLoading(false);
     } catch (err) {
@@ -51,12 +49,7 @@ export default function TasksPage() {
     }
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post(
-        'http://localhost:5000/api/tasks',
-        { title, description },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await api.post('/api/tasks', { title, description });
 
       setTasks([...tasks, response.data]);
       setTitle('');
@@ -69,16 +62,11 @@ export default function TasksPage() {
   // 3. Toggle Complete Status
   const handleToggleComplete = async (id, currentStatus, currentTitle, currentDesc) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.put(
-        `http://localhost:5000/api/tasks/${id}`,
-        { 
-          title: currentTitle,
-          description: currentDesc,
-          completed: !currentStatus 
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await api.put(`/api/tasks/${id}`, {
+        title: currentTitle,
+        description: currentDesc,
+        completed: !currentStatus
+      });
 
       setTasks(tasks.map(task => task._id === id ? response.data : task));
     } catch (err) {
@@ -101,16 +89,11 @@ export default function TasksPage() {
     }
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.put(
-        `http://localhost:5000/api/tasks/${id}`,
-        {
-          title: editTitle,
-          description: editDescription,
-          completed: currentStatus
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await api.put(`/api/tasks/${id}`, {
+        title: editTitle,
+        description: editDescription,
+        completed: currentStatus
+      });
 
       setTasks(tasks.map(task => task._id === id ? response.data : task));
       setEditingTaskId(null); // Edit mode band
@@ -124,10 +107,7 @@ export default function TasksPage() {
     if (!window.confirm('Kya aap waqai yeh task delete karna chahte hain?')) return;
 
     try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/tasks/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.delete(`/api/tasks/${id}`);
 
       // Filter out the deleted task from list
       setTasks(tasks.filter(task => task._id !== id));

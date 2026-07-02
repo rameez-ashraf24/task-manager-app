@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import axios from 'axios';
+import { api } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {
@@ -24,7 +24,7 @@ export default function RegisterPage() {
     }
     
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', {
+      const response = await api.post('/api/auth/register', {
         name: name, 
         email: email,
         password: password
