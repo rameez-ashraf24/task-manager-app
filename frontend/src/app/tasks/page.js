@@ -119,9 +119,13 @@ export default function TasksPage() {
   // 7. Logout Function
   const handleLogout = () => {
     localStorage.removeItem('token');
-    // Cookie delete karne ke liye uski expiry past mein set kar dete hain
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    router.push('/login');
+    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login';
+    } else {
+      router.push('/login');
+    }
   };
 
   if (loading) {
