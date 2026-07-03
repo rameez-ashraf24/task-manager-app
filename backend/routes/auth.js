@@ -11,13 +11,13 @@ router.post('/register', async (req, res) => {
 
         // 1. Check karna ke user ne saari cheezan bheji hain ya nahi
         if (!name || !email || !password) {
-            return res.status(400).json({ message: 'Meherbani kar ke saari fields fill karein.' });
+            return res.status(400).json({ message: 'Please fill in all fields.' });
         }
 
         // 2. Check karna ke kya yeh email pehle se database mein hai?
         const userExists = await User.findOne({ email });
         if (userExists) {
-            return res.status(400).json({ message: 'Yeh email pehle se registered hai.' });
+            return res.status(400).json({ message: 'This email is already registered.' });
         }
 
         // 3. Password ko hash (encrypt) karna
@@ -33,11 +33,11 @@ router.post('/register', async (req, res) => {
 
         await newUser.save();
 
-        res.status(201).json({ message: 'User register ho gaya hai! ✅' });
+        res.status(201).json({ message: 'User registered successfully! ✅' });
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server mein koi masla aa gaya hai.' });
+        res.status(500).json({ message: 'There was a server error.' });
     }
 });
 
@@ -51,19 +51,19 @@ router.post('/login', async (req, res) => {
 
         // 1. Check karna ke user ne email aur password dono likhe hain
         if (!email || !password) {
-            return res.status(400).json({ message: 'Meherbani kar ke email aur password dono likhein.' });
+            return res.status(400).json({ message: 'Please enter both email and password.' });
         }
 
         // 2. Check karna ke kya yeh email database mein exist karti hai?
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: 'Ghalat credentials (Email ya Password ghalat hai).' });
+            return res.status(400).json({ message: 'Invalid credentials (Email or password is incorrect).' });
         }
 
         // 3. Password check karna (jo password user ne likha kya woh database wale hashed password se match karta hai?)
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Ghalat credentials (Email ya Password ghalat hai).' });
+            return res.status(400).json({ message: 'Invalid credentials (Email or password is incorrect).' });
         }
 
         // 4. JWT Token generate karna
@@ -75,7 +75,7 @@ router.post('/login', async (req, res) => {
 
         // 5. Response mein token aur user ka data bhejna
         res.status(200).json({
-            message: 'Login kamyab raha! ✅',
+            message: 'Login successful! ✅',
             token,
             user: {
                 id: user._id,
@@ -86,7 +86,7 @@ router.post('/login', async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server mein koi masla aa gaya hai.' });
+        res.status(500).json({ message: 'There was a server error.' });
     }
 });
 

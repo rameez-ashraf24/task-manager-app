@@ -11,7 +11,7 @@ router.post('/', auth, async (req, res) => {
         const { title, description } = req.body;
 
         if (!title) {
-            return res.status(400).json({ message: 'Task ka title likhna zaroori hai!' });
+            return res.status(400).json({ message: 'Task title is required!' });
         }
 
         // Naya task banana aur usme user ki ID (jo token se mili) daalna
@@ -26,7 +26,7 @@ router.post('/', auth, async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server mein koi masla aa gaya hai.' });
+        res.status(500).json({ message: 'There was a server error.' });
     }
 });
 
@@ -54,12 +54,12 @@ router.put('/:id', auth, async (req, res) => {
         // 1. Pehle check karna ke kya yeh task database mein maujood hai?
         let task = await Task.findById(req.params.id);
         if (!task) {
-            return res.status(404).json({ message: 'Task nahi mila!' });
+            return res.status(404).json({ message: 'Task not found!' });
         }
 
         // 2. Security Check: Kya yeh task usi user ka hai jo ise edit kar raha hai?
         if (task.user.toString() !== req.user.userId) {
-            return res.status(401).json({ message: 'Access denied! Aap kisi aur ka task edit nahi kar sakte.' });
+            return res.status(401).json({ message: 'Access denied! You cannot edit someone else\'s task.' });
         }
 
         // 3. Jo jo cheez user ne bheji hai, use update karna
@@ -75,9 +75,9 @@ router.put('/:id', auth, async (req, res) => {
         console.error(error);
         // Agar id ghalat format mein ho to error handle karna
         if (error.kind === 'ObjectId') {
-            return res.status(404).json({ message: 'Task nahi mila!' });
+            return res.status(404).json({ message: 'Task not found!' });
         }
-        res.status(500).json({ message: 'Server mein koi masla aa gaya hai.' });
+        res.status(500).json({ message: 'There was a server error.' });
     }
 });
 
@@ -88,25 +88,25 @@ router.delete('/:id', auth, async (req, res) => {
         // 1. Task ko dhoondna
         const task = await Task.findById(req.params.id);
         if (!task) {
-            return res.status(404).json({ message: 'Task nahi mila!' });
+            return res.status(404).json({ message: 'Task not found!' });
         }
 
         // 2. Security Check: Kya yeh usi user ka task hai?
         if (task.user.toString() !== req.user.userId) {
-            return res.status(401).json({ message: 'Access denied! Aap kisi aur ka task delete nahi kar sakte.' });
+            return res.status(401).json({ message: 'Access denied! You cannot delete someone else\'s task.' });
         }
 
         // 3. Task ko database se remove karna
         await task.deleteOne();
         
-        res.status(200).json({ message: 'Task kamyabi se delete ho gaya hai! 🗑️' });
+        res.status(200).json({ message: 'Task deleted successfully! 🗑️' });
 
     } catch (error) {
         console.error(error);
         if (error.kind === 'ObjectId') {
-            return res.status(404).json({ message: 'Task nahi mila!' });
+            return res.status(404).json({ message: 'Task not found!' });
         }
-        res.status(500).json({ message: 'Server mein koi masla aa gaya hai.' });
+        res.status(500).json({ message: 'There was a server error.' });
     }
 });
 

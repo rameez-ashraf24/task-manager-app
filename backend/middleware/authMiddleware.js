@@ -6,7 +6,7 @@ module.exports = function (req, res, next) {
 
     // 2. Check karna ke kya token maujood hai?
     if (!token) {
-        return res.status(401).json({ message: 'Koi token nahi mila, access denied! ❌' });
+        return res.status(401).json({ message: 'No token provided, access denied! ❌' });
     }
 
     try {

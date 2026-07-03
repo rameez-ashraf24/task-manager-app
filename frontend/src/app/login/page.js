@@ -16,7 +16,7 @@ export default function LoginPage() {
     setSuccess('');
 
     if (!email || !password) {
-      setError('Meherbani kar ke email aur password dono fill karein.');
+      setError('Please fill in both email and password.');
       return;
     }
 
@@ -31,14 +31,14 @@ export default function LoginPage() {
         document.cookie = `token=${response.data.token}; path=/; max-age=86400; SameSite=Strict`;
       }
 
-      setSuccess('Login kamyab! Dashboard par le kar ja rahe hain... 🎉');
+      setSuccess('Login successful! Redirecting to dashboard... 🎉');
       
       setTimeout(() => {
         window.location.href = '/tasks';
       }, 1500);
 
     } catch (err) {
-      setError(err.response?.data?.message || 'Login karne mein koi masla hua hai.');
+      setError(err.response?.data?.message || 'There was a problem logging in.');
     }
   };
 

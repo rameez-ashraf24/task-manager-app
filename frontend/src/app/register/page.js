@@ -19,7 +19,7 @@ export default function RegisterPage() {
     setSuccess('');
 
     if (!name || !email || !password) {
-      setError('Meherbani kar ke saari fields fill karein.');
+      setError('Please fill in all fields.');
       return;
     }
     
@@ -30,14 +30,14 @@ export default function RegisterPage() {
         password: password
       });
 
-      setSuccess('Account successfully ban gaya hai! Redirecting...');
+      setSuccess('Your account was created successfully! Redirecting...');
       
       setTimeout(() => {
         router.push('/login');
       }, 2000);
 
     } catch (err) {
-      setError(err.response?.data?.message || 'Account banane mein koi masla hua hai.');
+      setError(err.response?.data?.message || 'There was a problem creating your account.');
     }
   };
 

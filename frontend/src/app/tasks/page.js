@@ -29,7 +29,7 @@ export default function TasksPage() {
       setTasks(response.data);
       setLoading(false);
     } catch (err) {
-      setError('Tasks load karne mein masla hua.');
+      setError('There was a problem loading tasks.');
       setLoading(false);
     }
   };
@@ -44,7 +44,7 @@ export default function TasksPage() {
     setError('');
 
     if (!title) {
-      setError('Task ka title lazmi hai!');
+      setError('Task title is required!');
       return;
     }
 
@@ -55,7 +55,7 @@ export default function TasksPage() {
       setTitle('');
       setDescription('');
     } catch (err) {
-      setError(err.response?.data?.message || 'Task banane mein koi error aaya.');
+      setError(err.response?.data?.message || 'There was an error creating the task.');
     }
   };
 
@@ -70,7 +70,7 @@ export default function TasksPage() {
 
       setTasks(tasks.map(task => task._id === id ? response.data : task));
     } catch (err) {
-      setError('Task update nahi ho saka.');
+      setError('Unable to update task.');
     }
   };
 
@@ -84,7 +84,7 @@ export default function TasksPage() {
   // 5. Save Updated Task (Title/Description)
   const handleSaveEdit = async (id, currentStatus) => {
     if (!editTitle) {
-      setError('Edit karte waqt Title khali nahi ho sakta!');
+      setError('Title cannot be empty while editing!');
       return;
     }
 
@@ -98,13 +98,13 @@ export default function TasksPage() {
       setTasks(tasks.map(task => task._id === id ? response.data : task));
       setEditingTaskId(null); // Edit mode band
     } catch (err) {
-      setError('Changes save karne mein masla hua.');
+      setError('There was an error saving changes.');
     }
   };
 
   // 6. Delete Task
   const handleDeleteTask = async (id) => {
-    if (!window.confirm('Kya aap waqai yeh task delete karna chahte hain?')) return;
+    if (!window.confirm('Are you sure you want to delete this task?')) return;
 
     try {
       await api.delete(`/api/tasks/${id}`);
@@ -112,7 +112,7 @@ export default function TasksPage() {
       // Filter out the deleted task from list
       setTasks(tasks.filter(task => task._id !== id));
     } catch (err) {
-      setError('Task delete karne mein masla hua. Backend route check karein.');
+      setError('There was a problem deleting the task. Please check the backend route.');
     }
   };
 
